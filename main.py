@@ -4,9 +4,11 @@ import re
 import sqlite3
 import datetime
 from emoji import emojize
+from config import token, database
+
 
 # Database
-con = sqlite3.connect('compteur.db')
+con = sqlite3.connect(database)
 cur = con.cursor()
 cur.execute("""CREATE TABLE IF NOT EXISTS commands (
 
@@ -39,7 +41,7 @@ def woof(update, context):
     chat_id = update.effective_chat.id 
     context.bot.send_photo(chat_id=chat_id, photo=url)  #, caption="Here's your dog !")
 
-    conn = sqlite3.connect('compteur.db', timeout = 1000)
+    conn = sqlite3.connect(database, timeout = 1000)
     with conn:
         cur = conn.cursor()
         requete = 'INSERT INTO commands (date, command) VALUES ("{}", "woof");'.format(str(datetime.datetime.now()))
@@ -50,7 +52,7 @@ def meow(update, context):
     chat_id = update.message.chat_id
     context.bot.send_photo(chat_id=chat_id, photo=url)  #, caption="Here's your cat !")
 
-    conn = sqlite3.connect('compteur.db', timeout = 1000)
+    conn = sqlite3.connect(database, timeout = 1000)
     with conn:
         cur = conn.cursor()
         requete = 'INSERT INTO commands (date, command) VALUES ("{}", "meow");'.format(str(datetime.datetime.now()))
@@ -59,7 +61,7 @@ def meow(update, context):
 def winner(update, context):
     chat_id = update.message.chat_id
 
-    conn = sqlite3.connect('compteur.db', timeout = 1000)
+    conn = sqlite3.connect(database, timeout = 1000)
     with conn:
         cur = conn.cursor()
         rq_chats = 'SELECT count(*) from commands where command = "meow";'.format(str(datetime.datetime.now()))
@@ -78,7 +80,7 @@ def winner(update, context):
         context.bot.send_message(chat_id=chat_id, text=sent_message, parse_mode='Markdown')
 
 def main():
-    updater = Updater("766769793:AAEpHWutD70U3iWb2Xl_JbmmhNH--QqAHqk", use_context=True)
+    updater = Updater(token, use_context=True)
     dp = updater.dispatcher
     dp.add_handler(CommandHandler('woof', woof))
     dp.add_handler(CommandHandler('meow', meow))

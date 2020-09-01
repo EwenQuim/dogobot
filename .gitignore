@@ -2,3 +2,4 @@ env/
 *.db
 *.txt
 nohup.out
+config.py
